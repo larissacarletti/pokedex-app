@@ -31,11 +31,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.pokedex.R
 import com.example.pokedex.data.models.PokedexListEntry
 import com.example.pokedex.ui.theme.RobotoCondensed
-import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun PokemonListScreen(
@@ -170,37 +170,30 @@ fun PokedexEntry(
             }
     ) {
         Column {
-            CoilImage(
-                request = ImageRequest.Builder(LocalContext.current)
+            AsyncImage (
+                model = ImageRequest.Builder(LocalContext.current)
                     .data(entry.imageUrl)
                     .target {
-                        viewModel.calcDominantColor(it) { color ->
+                        viewModel.calcDominantColor(it, dominantColor) { -> color
                             dominantColor = color
-                        }
+                    }
                     }
                     .build(),
                 contentDescription = entry.pokemonName,
-                fadeIn = true,
                 modifier = Modifier
                     .size(120.dp)
                     .align(CenterHorizontally)
-            ) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colors.primary,
-                    modifier = Modifier.scale(0.5f)
-                )
-                Text(
-                    text = entry.pokemonName,
-                    fontFamily = RobotoCondensed,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            )
+            Text(
+                text = entry.pokemonName,
+                fontFamily = RobotoCondensed,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
-
 @Composable
 fun PokedexRow(
     rowIndex: Int,
