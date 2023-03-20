@@ -14,7 +14,6 @@ import com.example.pokedex.util.Constants.PAGE_SIZE
 import com.example.pokedex.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.format.ResolverStyle
 import java.util.*
 import javax.inject.Inject
 
@@ -30,11 +29,14 @@ class PokemonListViewModel @Inject constructor(
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
 
+    init {
+        loadPokemonPaginated()
+    }
+
     fun loadPokemonPaginated() {
         viewModelScope.launch {
             isLoading.value = true
-            val result = repository.getPokemonList(PAGE_SIZE,curPage * PAGE_SIZE)
-            when(result){
+            when(val result = repository.getPokemonList(PAGE_SIZE,curPage * PAGE_SIZE)){
                 is Resource.Success -> {
                     endReached.value = curPage * PAGE_SIZE >= result.data!!.count
                     val pokedexEntries = result.data.results.mapIndexed { index, entry ->

@@ -1,6 +1,5 @@
 package com.example.pokedex.pokemonlist
 
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +13,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -64,6 +62,8 @@ fun PokemonListScreen(
             ){
 
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            PokemonList(navController = navController)
         }
     }
 }
@@ -121,6 +121,19 @@ fun PokemonList(
     val loadError by remember { viewModel.loadError }
     val isLoading by remember { viewModel.isLoading }
 
+    LazyColumn(contentPadding = PaddingValues(16.dp)) {
+        val itemCount = if(pokemonList.size % 2 ==0) {
+            pokemonList.size / 2
+        } else {
+            pokemonList.size / 2 + 1
+        }
+        items(itemCount) {
+            if(it >= itemCount - 1 && !endReached) {
+                viewModel.loadPokemonPaginated()
+            }
+            PokedexRow(rowIndex = it, entries = pokemonList, navController = navController)
+        }
+    }
 
 }
 
